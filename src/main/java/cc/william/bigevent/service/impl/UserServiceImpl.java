@@ -9,6 +9,7 @@ import cc.william.bigevent.pojo.User;
 import cc.william.bigevent.pojo.rest.Result;
 import cc.william.bigevent.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
@@ -56,6 +57,38 @@ public class UserServiceImpl implements UserService{
 
     }
 
+    @Override
+    public Result<User> getUserInfoByToken(String token) {
 
-    
+        Map<String, Object> userMap = JwtUtil.parseToken(token);
+
+        String username = (String) userMap.get("username");
+
+        User user = userMapper.findByUserName(username);
+
+
+        return Result.success(user);
+    }
+
+    @Override
+    public Result update(User user, String token) {
+
+        Map<String, Object> claims = JwtUtil.parseToken(token);
+
+        String username = (String) claims.get("username");
+
+        userMapper.update(user.getNickname(), user.getEmail(), username);
+
+        return Result.success();
+    }
+
+    @Override
+    public Result updateAvatar(String avatarUrl, String token) {
+
+        userMapper.updateAvatar(avatarUrl, (String) JwtUtil.parseToken(token).get("username"));
+
+        return Result.success();
+    }
+
+
 }
