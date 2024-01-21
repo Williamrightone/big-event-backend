@@ -17,7 +17,7 @@ public class JwtUtil {
                 .sign(Algorithm.HMAC256(KEY));
     }
 
-    public static Map<String, Object> verifyToken(String token){
+    public static Map<String, Object> parseToken(String token){
         return JWT.require(Algorithm.HMAC256(KEY))
                 .build()
                 .verify(token)
