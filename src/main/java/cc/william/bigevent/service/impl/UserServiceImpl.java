@@ -1,5 +1,6 @@
 package cc.william.bigevent.service.impl;
 
+import cc.william.bigevent.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,6 +8,8 @@ import cc.william.bigevent.mapper.UserMapper;
 import cc.william.bigevent.pojo.User;
 import cc.william.bigevent.pojo.rest.Result;
 import cc.william.bigevent.service.UserService;
+
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -41,7 +44,12 @@ public class UserServiceImpl implements UserService{
         }
 
         if(password.equals(loginUser.getPassword())){
-            return Result.success("Login success");
+
+            Map<String, Object> claims = Map.of("username", username, "password", password);
+
+            String token = JwtUtil.generateToken(claims);
+
+            return Result.success(token);
         }
 
         return Result.error("Password error");
