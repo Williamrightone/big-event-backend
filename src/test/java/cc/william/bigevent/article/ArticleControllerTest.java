@@ -7,6 +7,8 @@
  */
 package cc.william.bigevent.article;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,7 +34,7 @@ public class ArticleControllerTest {
 
     @Test
     void testList() {
-        
+        assertEquals("234", articleController.list("123").getData());
     }
 
 }
