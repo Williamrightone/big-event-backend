@@ -4,14 +4,18 @@ import cc.william.bigevent.pojo.User;
 import cc.william.bigevent.pojo.rest.Result;
 
 public interface UserService {
-    
-    public Result register(String username, String password);
 
-    public Result<String> login(String username, String password);
+    User findByUserName(String username);
 
-    public Result<User> getUserInfoByToken(String token);
+    //注册
+    void register(String username, String password);
 
-    public Result update(User user, String token);
+    //更新
+    void update(User user);
 
-    public Result updateAvatar(String avatarUrl, String token);
+    //更新头像
+    void updateAvatar(String avatarUrl);
+
+    //更新密码
+    void updatePwd(String newPwd);
 }

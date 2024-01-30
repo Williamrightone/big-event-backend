@@ -10,7 +10,7 @@ public class JwtUtil {
 
     private static final String KEY = "bigevent-william";
 
-    public static String generateToken(Map<String, Object> claims){
+    public static String genToken(Map<String, Object> claims){
         return JWT.create()
                 .withClaim("claims", claims)
                 .withExpiresAt(new Date(System.currentTimeMillis() + 60 * 60 * 1000 *12))

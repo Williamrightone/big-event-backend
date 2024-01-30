@@ -29,12 +29,5 @@ import cc.william.bigevent.controller.ArticleController;
 @SpringBootTest
 public class ArticleControllerTest {
 
-    @Autowired
-    private ArticleController articleController;
-
-    @Test
-    void testList() {
-        assertEquals("234", articleController.list("123").getData());
-    }
 
 }

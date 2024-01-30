@@ -1,6 +1,8 @@
 package cc.william.bigevent.service.impl;
 
 import cc.william.bigevent.util.JwtUtil;
+import cc.william.bigevent.util.Md5Util;
+import cc.william.bigevent.util.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,77 +19,38 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserMapper userMapper;
-
     @Override
-    public Result register(String username, String password) {
-        
-
-        User user = userMapper.findByUserName(username);
-
-        if(user != null){
-            return Result.error("UserName existed");
-        }
-
-        System.out.println("username: " + username);
-
-        userMapper.add(username, password);
-
-        return Result.success();
-
+    public User findByUserName(String username) {
+        User u = userMapper.findByUserName(username);
+        return u;
     }
 
     @Override
-    public Result<String> login(String username, String password) {
-        User loginUser = userMapper.findByUserName(username);
-
-        if(null == loginUser){
-            return Result.error("UserName not existed");
-        }
-
-        if(password.equals(loginUser.getPassword())){
-
-            Map<String, Object> claims = Map.of("username", username, "password", password);
-
-            String token = JwtUtil.generateToken(claims);
-
-            return Result.success(token);
-        }
-
-        return Result.error("Password error");
-
+    public void register(String username, String password) {
+        //加密
+        String md5String = Md5Util.getMD5String(password);
+        //添加
+        userMapper.add(username,md5String);
     }
 
     @Override
-    public Result<User> getUserInfoByToken(String token) {
-
-        Map<String, Object> userMap = JwtUtil.parseToken(token);
-
-        String username = (String) userMap.get("username");
-
-        User user = userMapper.findByUserName(username);
-
-
-        return Result.success(user);
+    public void update(User user) {
+        user.setUpdateTime(LocalDateTime.now());
+        userMapper.update(user);
     }
 
     @Override
-    public Result update(User user, String token) {
-
-        Map<String, Object> claims = JwtUtil.parseToken(token);
-
-        String username = (String) claims.get("username");
-
-        userMapper.update(user.getNickname(), user.getEmail(), username);
-
-        return Result.success();
+    public void updateAvatar(String avatarUrl) {
+        Map<String,Object> map = ThreadLocalUtil.get();
+        Integer id = (Integer) map.get("id");
+        userMapper.updateAvatar(avatarUrl,id);
     }
 
     @Override
-    public Result updateAvatar(String avatarUrl, String token) {
-
-        userMapper.updateAvatar(avatarUrl, (String) JwtUtil.parseToken(token).get("username"));
-
-        return Result.success();
+    public void updatePwd(String newPwd) {
+        Map<String,Object> map = ThreadLocalUtil.get();
+        Integer id = (Integer) map.get("id");
+        userMapper.updatePwd(Md5Util.getMD5String(newPwd),id);
     }
 
 
